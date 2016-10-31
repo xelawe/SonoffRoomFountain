@@ -1,4 +1,5 @@
 /*
+Idea: https://tzapu.com/sonoff-firmware-boilerplate-tutorial/
 
     Flash Mode: DIO
     Flash Frequency: 40MHz
@@ -284,7 +285,7 @@ void setup()
   //set config save notify callback
   wifiManager.setSaveConfigCallback(saveConfigCallback);
 
-  if (!wifiManager.autoConnect()) {
+  if (!wifiManager.autoConnect("SonoffRF")) {
     Serial.println("failed to connect and hit timeout");
     //reset and try again, or maybe put it to deep sleep
     ESP.reset();
