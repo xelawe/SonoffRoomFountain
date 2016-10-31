@@ -12,7 +12,7 @@
     Upload Speed: 115200
     Port: Your COM port connected to sonoff
 
-   1MB flash sizee
+   1MB flash size
 
    sonoff header
    1 - vcc 3v3
