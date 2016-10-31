@@ -240,7 +240,7 @@ void setup()
   // start ticker with 0.5 because we start in AP mode and try to connect
   ticker.attach(0.6, tick);
 
-  const char *hostname = "ambient";
+  const char *hostname = "ESPRF";
 
   WiFiManager wifiManager;
   //set callback that gets called when connecting to previous WiFi fails, and enters Access Point mode
