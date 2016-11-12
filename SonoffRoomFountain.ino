@@ -45,6 +45,7 @@
 
 #define relStateOFF LOW
 #define relStateON HIGH
+#define inpStateLow LOW // Low Water state
 
 #define BLYNK_PRINT Serial    // Comment this out to disable prints and save space
 #include <ESP8266WiFi.h>
@@ -89,7 +90,7 @@ int relayState = relStateOFF;
 
 //inverted button state
 int buttonState = HIGH;
-int InputState = HIGH;
+int InputState = inpStateLow;
 
 static long startPress = 0;
 
@@ -115,7 +116,7 @@ void setState(int s) {
   int lv_s = s;
 
   // When there is no water -> turn relay off!
-  if ( lv_s == relStateON && InputState == HIGH ) {
+  if ( lv_s == relStateON && InputState == inpStateLow ) {
     lv_s = relStateOFF;
     relayState = lv_s;
   }
@@ -240,7 +241,7 @@ void setup()
   // start ticker with 0.5 because we start in AP mode and try to connect
   ticker.attach(0.6, tick);
 
-  const char *hostname = "ESPRF";
+  const char *hostname = "SonoffRF";
 
   WiFiManager wifiManager;
   //set callback that gets called when connecting to previous WiFi fails, and enters Access Point mode
@@ -279,7 +280,7 @@ void setup()
   //set config save notify callback
   wifiManager.setSaveConfigCallback(saveConfigCallback);
 
-  if (!wifiManager.autoConnect("SonoffRF")) {
+  if (!wifiManager.autoConnect(hostname)) {
     Serial.println("failed to connect and hit timeout");
     //reset and try again, or maybe put it to deep sleep
     ESP.reset();
@@ -345,7 +346,7 @@ void setup()
   pinMode(SONOFF_RELAY, OUTPUT);
 
   //setup input
-  pinMode(SONOFF_INPUT, INPUT);
+  pinMode(SONOFF_INPUT, INPUT_PULLUP);
   InputState = digitalRead(SONOFF_INPUT);
   attachInterrupt(SONOFF_INPUT, toggleInput, CHANGE);
 
@@ -378,7 +379,7 @@ void loop()
     case CMD_INPUT_CHANGE:
       int currentStateInp = digitalRead(SONOFF_INPUT);
       if (currentStateInp != InputState) {
-        if (currentStateInp == HIGH) {
+        if (currentStateInp == inpStateLow) {
           turnOff();
         }
         InputState = currentStateInp;
